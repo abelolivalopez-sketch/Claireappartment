@@ -10,11 +10,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 
-/* =====================================================================
-   EDIT PANEL: all the info shown on this page lives in the CONFIG
-   object near the end of the <script> tag at the bottom of this file.
-   Search for "EDIT PANEL" to jump straight there.
-   ===================================================================== */
 
 :root {
   --bg: #ECE2C8;
@@ -257,22 +252,14 @@ footer {
 </div>
 
 <script>
-/* =====================================================================
-   EDIT PANEL — change things here, nothing else needs touching.
-   - ssid / password: your real wifi network.
-   - propertyName: whatever name you'd like shown at the top.
-   - restaurants / museums: each one is { name, note, address }.
-     "note" is a short line (cuisine, vibe). "address" is used to build
-     the Google Maps link automatically — you don't need to add a URL.
-   Save the file and you're done.
-   ===================================================================== */
+
 const CONFIG = {
   address: "17 rue au Coqs, 14400 Bayeux, France",
   propertyName: "Claire apartment",
   wifi: {
     ssid: "Livebox-4060",
     password: "SbdLXznZP22nhDMZoE",
-    encryption: "WPA" // use "WPA" for WPA/WPA2, "WEP", or "nopass" if there's no password
+    encryption: "WPA" 
   },
   restaurants: [
     { name: "Bonbonne", note: "Fine, creative French cooking — one of the best-rated spots in town.", address: "13 Rue Saint-Jean, 14400 Bayeux, France" },
@@ -289,7 +276,7 @@ const CONFIG = {
   ]
 };
 
-// --- No need to touch anything below this line ---
+
 
 document.getElementById('propertyName').textContent = CONFIG.propertyName;
 document.getElementById('addressLine').textContent = CONFIG.address;
@@ -321,7 +308,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn) {
       btn.textContent = "✓";
       setTimeout(function() { btn.textContent = original; }, 1200);
     } catch (e) {
-      // Clipboard API not available; the text is already visible to copy by hand.
+     
     }
   });
 });
