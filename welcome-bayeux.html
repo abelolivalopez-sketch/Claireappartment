@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Welcome to Bayeux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+
+/* =====================================================================
+   EDIT PANEL: all the info shown on this page lives in the CONFIG
+   object near the end of the <script> tag at the bottom of this file.
+   Search for "EDIT PANEL" to jump straight there.
+   ===================================================================== */
+
+:root {
+  --bg: #ECE2C8;
+  --panel: #FBF6E8;
+  --panel-line: #D9CCA3;
+  --ink: #2C2417;
+  --ink-soft: #5B5138;
+  --blue: #2E4F5E;
+  --blue-soft: #5A7B8A;
+  --gold: #B4841A;
+  --red: #9C3B2A;
+  --shadow: rgba(44,36,23,0.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1D1912;
+    --panel: #29231A;
+    --panel-line: #453B29;
+    --ink: #EFE6D2;
+    --ink-soft: #C6BA9C;
+    --blue: #7FA3B2;
+    --blue-soft: #5A7B8A;
+    --gold: #DCAE4E;
+    --red: #C6725D;
+    --shadow: rgba(0,0,0,0.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1D1912;
+  --panel: #29231A;
+  --panel-line: #453B29;
+  --ink: #EFE6D2;
+  --ink-soft: #C6BA9C;
+  --blue: #7FA3B2;
+  --blue-soft: #5A7B8A;
+  --gold: #DCAE4E;
+  --red: #C6725D;
+  --shadow: rgba(0,0,0,0.35);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+body {
+  font-family: 'Karla', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  line-height: 1.5;
+}
+
+h1, h2 { font-family: 'Spectral', Georgia, 'Times New Roman', serif; margin: 0; }
+
+.frieze {
+  height: 10px;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    115deg,
+    var(--blue) 0px, var(--blue) 10px,
+    var(--gold) 10px, var(--gold) 20px,
+    var(--red) 20px, var(--red) 30px
+  );
+  opacity: 0.85;
+}
+
+.wrap {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 36px 22px 60px;
+}
+
+header.hero { margin-bottom: 34px; }
+.hero h1 {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.hero .place { color: var(--blue); }
+.hero p.sub {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  max-width: 46ch;
+}
+.hero .addr {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+section { margin-bottom: 38px; }
+section h2 { font-size: 21px; font-weight: 600; margin-bottom: 4px; }
+section .lede { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 16px; }
+
+.wifi-panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 6px 18px var(--shadow);
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.wifi-fields { flex: 1; min-width: 190px; }
+.wifi-row { margin-bottom: 14px; }
+.wifi-row:last-child { margin-bottom: 0; }
+.wifi-label { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 3px; }
+.wifi-value-row { display: flex; align-items: center; gap: 8px; }
+.wifi-value { font-size: 19px; font-weight: 600; letter-spacing: 0.01em; word-break: break-all; }
+.copy-btn {
+  border: 1px solid var(--panel-line);
+  background: transparent;
+  color: var(--blue);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Karla', sans-serif;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: var(--blue); color: var(--panel); }
+.copy-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+#wifi-qr { background: #fff; padding: 8px; border-radius: 10px; line-height: 0; flex-shrink: 0; }
+.wifi-qr-caption { font-size: 12px; color: var(--ink-soft); text-align: center; margin-top: 6px; max-width: 132px; }
+
+.card-list { display: flex; flex-direction: column; gap: 12px; }
+.place-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.place-card .info h3 { font-family: 'Spectral', serif; font-size: 17px; font-weight: 600; margin: 0 0 4px; }
+.place-card .info p { margin: 0; font-size: 13.5px; color: var(--ink-soft); }
+.place-card a.map-link {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue);
+  text-decoration: none;
+  border-bottom: 1px solid var(--blue-soft);
+  white-space: nowrap;
+  padding-top: 2px;
+}
+.place-card a.map-link:hover { color: var(--red); border-color: var(--red); }
+
+footer {
+  margin-top: 44px;
+  padding-top: 18px;
+  border-top: 1px solid var(--panel-line);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 420px) {
+  .hero h1 { font-size: 27px; }
+  .wifi-panel { flex-direction: column; align-items: stretch; }
+  #wifi-qr { align-self: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="frieze"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <h1>Welcome to <span class="place" id="propertyName">Claire apartment</span></h1>
+    <p class="sub">Everything you need for your stay in Bayeux</p>
+    <p class="addr" id="addressLine">17 rue au Coqs, 14400 Bayeux</p>
+  </header>
+
+  <section id="wifiSection">
+    <h2>Connect to the wifi</h2>
+    <p class="lede">Scan the code below to connect automatically, or enter the details by hand.</p>
+    <div class="wifi-panel">
+      <div class="wifi-fields">
+        <div class="wifi-row">
+          <div class="wifi-label">Network</div>
+          <div class="wifi-value-row">
+            <span class="wifi-value" id="ssidText">Livebox-4060</span>
+            <button class="copy-btn" data-copy="ssidText" type="button">Copy</button>
+          </div>
+        </div>
+        <div class="wifi-row">
+          <div class="wifi-label">Password</div>
+          <div class="wifi-value-row">
+            <span class="wifi-value" id="passText">SbdLXznZP22nhDMZoE</span>
+            <button class="copy-btn" data-copy="passText" type="button">Copy</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        
+        <div id="wifi-qr">
+        <img src="QR_WiFi_Livebox-4060.png" alt="Código QR para conectarse a la WiFi"
+         width="132"
+         height="132">
+          
+        </div>
+        
+        <p class="wifi-qr-caption">Scan with your camera app</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="restaurantsSection">
+    <h2>Eat nearby</h2>
+    <p class="lede">A few addresses a short walk away.</p>
+    <div class="card-list" id="restaurantList"></div>
+  </section>
+
+  <section id="museumsSection">
+    <h2>Museums and things to see</h2>
+    <p class="lede">The best of Bayeux and the surrounding area.</p>
+    <div class="card-list" id="museumList"></div>
+  </section>
+
+  <footer>
+    <p>Enjoy your stay in Bayeux!</p>
+  </footer>
+
+</div>
+
+<script>
+/* =====================================================================
+   EDIT PANEL — change things here, nothing else needs touching.
+   - ssid / password: your real wifi network.
+   - propertyName: whatever name you'd like shown at the top.
+   - restaurants / museums: each one is { name, note, address }.
+     "note" is a short line (cuisine, vibe). "address" is used to build
+     the Google Maps link automatically — you don't need to add a URL.
+   Save the file and you're done.
+   ===================================================================== */
+const CONFIG = {
+  address: "17 rue au Coqs, 14400 Bayeux, France",
+  propertyName: "Claire apartment",
+  wifi: {
+    ssid: "Livebox-4060",
+    password: "SbdLXznZP22nhDMZoE",
+    encryption: "WPA" // use "WPA" for WPA/WPA2, "WEP", or "nopass" if there's no password
+  },
+  restaurants: [
+    { name: "Bonbonne", note: "Fine, creative French cooking — one of the best-rated spots in town.", address: "13 Rue Saint-Jean, 14400 Bayeux, France" },
+    { name: "La Rapière", note: "Upscale Norman cuisine in a cosy, historic dining room.", address: "53 Rue Saint-Jean, 14400 Bayeux, France" },
+    { name: "La Normande", note: "Classic Norman dishes, mussels and local staples.", address: "46 Rue Saint-Jean, 14400 Bayeux, France" },
+    { name: "Le Saint Jean", note: "Wood-fired pizza and a relaxed, casual atmosphere.", address: "60 Rue Saint-Jean, 14400 Bayeux, France" }
+  ],
+  museums: [
+    { name: "Bayeux Tapestry Museum", note: "The famous 11th-century tapestry — a must-see.", address: "13B Rue de Nesmond, 14400 Bayeux, France" },
+    { name: "Bayeux Cathedral (Notre-Dame)", note: "Striking Gothic cathedral, free to enter.", address: "Rue du Bienvenu, 14400 Bayeux, France" },
+    { name: "Museum of the Battle of Normandy", note: "The history of D-Day and the Normandy campaign.", address: "Bd Fabian Ware, 14400 Bayeux, France" },
+    { name: "Arbre de la Liberté", note: "A historic tree, beautifully lit up on summer evenings.", address: "Place de la Liberté, 14400 Bayeux, France" }
+  ]
+};
+
+// --- No need to touch anything below this line ---
+
+document.getElementById('propertyName').textContent = CONFIG.propertyName;
+document.getElementById('addressLine').textContent = CONFIG.address;
+document.getElementById('ssidText').textContent = CONFIG.wifi.ssid;
+document.getElementById('passText').textContent = CONFIG.wifi.password;
+
+function mapsUrl(name, address) {
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(name + ", " + address);
+}
+
+function renderList(containerId, items) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map(function(item) {
+    return '<div class="place-card">' +
+      '<div class="info"><h3>' + item.name + '</h3><p>' + item.note + '</p></div>' +
+      '<a class="map-link" target="_blank" rel="noopener" href="' + mapsUrl(item.name, item.address) + '">→ Maps</a>' +
+      '</div>';
+  }).join('');
+}
+renderList('restaurantList', CONFIG.restaurants);
+renderList('museumList', CONFIG.museums);
+
+document.querySelectorAll('.copy-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    const text = document.getElementById(btn.dataset.copy).textContent;
+    try {
+      navigator.clipboard.writeText(text);
+      const original = btn.textContent;
+      btn.textContent = "✓";
+      setTimeout(function() { btn.textContent = original; }, 1200);
+    } catch (e) {
+      // Clipboard API not available; the text is already visible to copy by hand.
+    }
+  });
+});
+
+
+</script>
+</body>
+</html>
