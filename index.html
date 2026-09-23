@@ -244,7 +244,13 @@ footer {
     <p class="lede">The best of Bayeux and the surrounding area.</p>
     <div class="card-list" id="museumList"></div>
   </section>
-
+  
+  <section id="liveSection">
+    <h2>Basics for living</h2>
+    <p class="lede">For find some supermarkets or laundry</p>
+    <div class="card-list" id="liveList"></div>
+  </section>
+  
   <footer>
     <p>Enjoy your stay in Bayeux!</p>
   </footer>
@@ -273,6 +279,12 @@ const CONFIG = {
     { name: "Bayeux Cathedral (Notre-Dame)", note: "Striking Gothic cathedral, free to enter.", address: "Rue du Bienvenu, 14400 Bayeux, France" },
     { name: "Museum of the Battle of Normandy", note: "The history of D-Day and the Normandy campaign.", address: "Bd Fabian Ware, 14400 Bayeux, France" },
     { name: "Arbre de la Liberté", note: "A historic tree, beautifully lit up on summer evenings.", address: "Place de la Liberté, 14400 Bayeux, France" }
+  ],
+  live: [
+    { name: "Carrefour city", address: "22 Rue Saint-Jean, 14400 Bayeux" },
+    { name: "Lidl", note: "Cheapest place to take something for eat.", address: "Rte d'Esquay sur Seulles, 14400 Saint-Vigor-le-Grand" },
+    { name: "Intermarché", address: "Rte d'Esquay sur Seulles, 14400 Saint-Vigor-le-Grand" },
+    { name: "Laundry", address: "10 Rue Maréchal Foch, 14400 Bayeux" }
   ]
 };
 
@@ -298,7 +310,8 @@ function renderList(containerId, items) {
 }
 renderList('restaurantList', CONFIG.restaurants);
 renderList('museumList', CONFIG.museums);
-
+renderList('liveList', CONFIG.live);
+  
 document.querySelectorAll('.copy-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
     const text = document.getElementById(btn.dataset.copy).textContent;
